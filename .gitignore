@@ -105,3 +105,6 @@ venv.bak/
 .idea/workspace.xml
 .idea/ClassChecker.iml
 .idea/misc.xml
+*.iml
+*.iml
+*.xml
