@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, NavigableString
 from urllib import request, parse
-
+import ssl
 
 def get_table_info(table) -> dict:
     """Gets the table soup and extracts the course information and returns
@@ -21,8 +21,9 @@ def get_table_info(table) -> dict:
     return {headers[i]: values[i] for i in range(len(headers))}
 
 
+context = ssl._create_unverified_context()
 
-page = request.urlopen("https://www.reg.uci.edu/perl/WebSoc?YearTerm=2019-92&CourseCodes=01020")
+page = request.urlopen("https://www.reg.uci.edu/perl/WebSoc?YearTerm=2019-92&CourseCodes=01020",context=context)
 soup = BeautifulSoup(page, "html.parser")
 
 # Add error handling for invalid course code
