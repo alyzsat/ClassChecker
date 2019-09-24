@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup, NavigableString
 from urllib import request, parse
 
+
 def get_table_info(table) -> dict:
     """Gets the table soup and extracts the course information and returns
     it as a dictionary.
