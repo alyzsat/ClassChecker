@@ -29,13 +29,13 @@ class CoursePage:
                 for tc in list(tr):
                     if str(tc).strip():
                         if tc.name == "th":
-                            headers.append(tc.text)
+                            headers.append(tc.text.lower())
                         else:
                             values.append(tc.text)
         return {headers[i]: values[i] for i in range(len(headers))}
 
     def _build_url(self):
-        query_parameters = [('YearTerm', self.year), ('CourseCodes', self.course_code)]
+        query_parameters = [('YearTerm', self.year + "-" + self.quarter), ('CourseCodes', self.course_code)]
         return WEBSOC_URL + '?' + parse.urlencode(query_parameters)
 
     def _refresh(self):
@@ -54,5 +54,6 @@ class CoursePage:
             raise InvalidCourseCode()
 
     def get_status(self):
-        return self.course_info["Status"]
+        self._refresh()
+        return self.course_info["status"]
 
