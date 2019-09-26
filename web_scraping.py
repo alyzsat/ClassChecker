@@ -2,40 +2,57 @@ from bs4 import BeautifulSoup, NavigableString
 from urllib import request, parse
 import ssl
 
-def get_table_info(table) -> dict:
-    """Gets the table soup and extracts the course information and returns
-    it as a dictionary.
-    """
-    headers = []
-    values = []
-    table_info = dict()
-    for tr in list(table):
-        # Find actual headers and values (Should only be two rows)
-        if len(list(tr)) > 2:
-            for tc in list(tr):
-                if str(tc).strip():
-                    if tc.name == "th":
-                        headers.append(tc.text)
-                    else:
-                        values.append(tc.text)
-    return {headers[i]: values[i] for i in range(len(headers))}
+WEBSOC_URL = "https://www.reg.uci.edu/perl/WebSoc"
+
+class InvalidCourseCode(Exception):
+    pass
+
+class CoursePage:
+    def __init__(self, y : str, q : str, cc : str):
+        self.year = y
+        self.quarter = q
+        self.course_code = cc
+        self.course_info = None
+        self.url = self._build_url()
+        self.check_cc_valid()
 
 
-context = ssl._create_unverified_context()
+    def _get_table_info(self, table) -> dict:
+        """Gets the table soup and extracts the course information and returns
+        it as a dictionary.
+        """
+        headers = []
+        values = []
+        for tr in list(table):
+            # Find actual headers and values (Should only be two rows)
+            if len(list(tr)) > 2:
+                for tc in list(tr):
+                    if str(tc).strip():
+                        if tc.name == "th":
+                            headers.append(tc.text)
+                        else:
+                            values.append(tc.text)
+        return {headers[i]: values[i] for i in range(len(headers))}
 
-page = request.urlopen("https://www.reg.uci.edu/perl/WebSoc?YearTerm=2019-92&CourseCodes=01020",context=context)
-soup = BeautifulSoup(page, "html.parser")
+    def _build_url(self):
+        query_parameters = [('YearTerm', self.year), ('CourseCodes', self.course_code)]
+        return WEBSOC_URL + '?' + parse.urlencode(query_parameters)
 
-# Add error handling for invalid course code
-# (because invalid course codes won't have a table to check)
+    def _refresh(self):
+        """If this function is called, the url will be built, the data from the page will be saved into dict"""
+        context = ssl._create_unverified_context()
+        page = request.urlopen(self.url, context=context)
+        soup = BeautifulSoup(page, "html.parser")
+        table = soup.find(name="div", class_="course-list").find(name="table")
+        self.course_info = self._get_table_info(table)
 
-table = soup.find(name="div", class_="course-list").find(name="table")
-table_info = get_table_info(table)
-print(table_info)
+    def check_cc_valid(self):
+        context = ssl._create_unverified_context()
+        page = request.urlopen(self.url, context=context)
+        soup = BeautifulSoup(page, "html.parser")
+        if "No courses matched" in soup.text:
+            raise InvalidCourseCode()
 
-# title = table.find_all(name="th")
-#
-# value = table.find_all(name="td")
+    def get_status(self):
+        return self.course_info["Status"]
 
-# print(title)
-# print(value)
