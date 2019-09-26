@@ -29,12 +29,10 @@ class MainWindow(QWidget):
         self.setGeometry((w-self.width)/2, (h-self.height)/2, self.width, self.height)
 
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
     sys.exit(app.exec_())
-
 
     # cp = CoursePage("2019", "92", "34414")
     # cp.refresh()
