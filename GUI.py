@@ -26,8 +26,8 @@ class MainWindow(QWidget):
     def init_ui(self):
         self.setWindowTitle(self.title)
         self.set_dimensions()
-        self.show()
         self.create_layout()
+        self.show()
 
     def create_layout(self):
         hbox = QHBoxLayout()
@@ -40,7 +40,6 @@ class MainWindow(QWidget):
         self.create_left()
         self.create_right()
 
-
     def create_left(self):
         self.create_cc_section()
         self.create_year_section()
@@ -52,7 +51,6 @@ class MainWindow(QWidget):
     def create_right(self):
         info_box = QTextBrowser()
         self.right_vbox.addWidget(info_box)
-
 
     def set_dimensions(self):
         """Sets the size of the window in proportion to the screen resolution"""
@@ -83,8 +81,9 @@ class MainWindow(QWidget):
         self.year_combobox = QComboBox()
 
         year = date.today().year
-        for yr in range(year, year - 4, -1):
+        for yr in range(year + 1, year - 4, -1):
             self.year_combobox.addItem(str(yr))
+        self.year_combobox.setCurrentText(str(self._determine_term()[0]))
 
         year_hbox.addWidget(label)
         year_hbox.addWidget(self.year_combobox)
@@ -97,6 +96,7 @@ class MainWindow(QWidget):
 
         for q in QUARTERS:
             self.quarter_combobox.addItem(q.capitalize())
+        self.year_combobox.setCurrentText(self._determine_term()[1])
 
         quarter_hbox.addWidget(label)
         quarter_hbox.addWidget(self.quarter_combobox)
@@ -121,6 +121,19 @@ class MainWindow(QWidget):
         button_hbox.addWidget(self.start_button)
         button_hbox.addWidget(self.stop_button)
         self.left_vbox.addLayout(button_hbox)
+
+    def _determine_term(self):
+        """Determines what the default year and quarter should be based on the month"""
+        year = date.today().year
+        month = date.today().month
+        quarter = "Winter"
+        if month in range(2, 5):
+            quarter = "Spring"
+        elif month in range(5, 11):
+            quarter = "Fall"
+        elif month in range(11, 13):
+            year += 1
+        return year, quarter
         
 
 
