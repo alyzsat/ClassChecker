@@ -1,6 +1,10 @@
+from PyQt5.uic.properties import QtGui
+
 from web_scraping import CoursePage
-from PyQt5.QtWidgets import QWidget, QApplication, QDesktopWidget
+from PyQt5.QtWidgets import QWidget, QApplication, QDesktopWidget, QLineEdit, QLabel, QHBoxLayout, QVBoxLayout, \
+    QSpacerItem, QComboBox
 import sys
+import datetime
 
 
 QUARTER = {'fall': '92',
@@ -19,9 +23,33 @@ class MainWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        self.cc_line = None
         self.setWindowTitle(self.title)
         self.set_dimensions()
         self.show()
+        self.create_layout()
+
+    def create_layout(self):
+        hbox = QHBoxLayout()
+        self.left_vbox = QVBoxLayout()
+        hbox.addLayout(self.left_vbox)
+        self.right_vbox = QVBoxLayout()
+        hbox.addLayout(self.right_vbox)
+
+        self.setLayout(hbox)
+
+        self.right_vbox.addStretch()
+
+        self.create_cc_section()
+        self.create_year_section()
+        self.create_quarter_section()
+        self.create_restr_section()
+        self.create_button_section()
+
+        # do right side later
+
+
+
 
     def set_dimensions(self):
         """Sets the size of the window in proportion to the screen resolution"""
@@ -36,6 +64,29 @@ class MainWindow(QWidget):
 
         # Set the size of the window
         self.setGeometry((w-self.width)/2, (h-self.height)/2, self.width, self.height)
+
+    def create_cc_section(self):
+        cc_hbox = QHBoxLayout()
+        self.left_vbox.addLayout(cc_hbox)
+        label = QLabel("Type Course Code:")
+        self.cc_line = QLineEdit()
+
+        cc_hbox.addWidget(label)
+        cc_hbox.addWidget(self.cc_line)
+
+
+    def create_year_section(self):
+        year_hbox = QHBoxLayout()
+        self.left_vbox.addLayout(year_hbox)
+        label = QLabel("Select Year:")
+        self.year_combobox = QComboBox()
+        self.year_combobox.addItem()
+        year_hbox.addWidget(label)
+        year_hbox.addWidget(self.year_combobox)
+
+    def create_quarter_section(self):
+        
+
 
 
 if __name__ == '__main__':
