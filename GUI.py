@@ -3,6 +3,15 @@ from PyQt5.QtWidgets import QWidget, QApplication, QDesktopWidget
 import sys
 
 
+QUARTER = {'fall': '92',
+            'winter': '03',
+            'spring': '14',
+            'summer session 1': '25',
+            'summer session 2': '76',
+            '10-wk summer': '39'
+            }
+
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
