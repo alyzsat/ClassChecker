@@ -14,7 +14,7 @@ QUARTERS = {'fall': '92',
             'summer session 1': '25',
             'summer session 2': '76',
             '10-wk summer': '39'
-           }
+            }
 
 
 class MainWindow(QWidget):
@@ -24,7 +24,6 @@ class MainWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        self.cc_line = None
         self.setWindowTitle(self.title)
         self.set_dimensions()
         self.show()
@@ -71,12 +70,12 @@ class MainWindow(QWidget):
 
     def create_cc_section(self):
         cc_hbox = QHBoxLayout()
-        self.left_vbox.addLayout(cc_hbox)
         label = QLabel("Type Course Code:")
-        self.cc_line = QLineEdit()
+        self.cc_line_edit = QLineEdit()
 
         cc_hbox.addWidget(label)
-        cc_hbox.addWidget(self.cc_line)
+        cc_hbox.addWidget(self.cc_line_edit)
+        self.left_vbox.addLayout(cc_hbox)
 
     def create_year_section(self):
         year_hbox = QHBoxLayout()
