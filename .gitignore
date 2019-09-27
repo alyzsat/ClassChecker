@@ -112,3 +112,4 @@ venv.bak/
 *.xml
 *.iml
 test.py
+.idea/misc.xml
