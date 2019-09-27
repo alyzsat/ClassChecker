@@ -21,6 +21,16 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.title = 'ClassChecker'
+
+        self.cc_lineedit = QLineEdit()
+        self.year_combobox = QComboBox()
+        self.quarter_combobox = QComboBox()
+        self.restr_N = QCheckBox("N")
+        self.restr_L = QCheckBox("L")
+        self.restr_A = QCheckBox("A")
+        self.start_button = QPushButton("Start Checking")
+        self.stop_button = QPushButton("Stop")
+
         self.init_ui()
 
     def init_ui(self):
@@ -36,7 +46,6 @@ class MainWindow(QWidget):
         hbox.addLayout(self.left_vbox)
         hbox.addLayout(self.right_vbox)
         self.setLayout(hbox)
-
         self.create_left()
         self.create_right()
 
@@ -69,16 +78,16 @@ class MainWindow(QWidget):
     def create_cc_section(self):
         cc_hbox = QHBoxLayout()
         label = QLabel("Type Course Code:")
-        self.cc_line_edit = QLineEdit()
+
+        self.cc_lineedit.textChanged.connect(self._check_cc_valid)
 
         cc_hbox.addWidget(label)
-        cc_hbox.addWidget(self.cc_line_edit)
+        cc_hbox.addWidget(self.cc_lineedit)
         self.left_vbox.addLayout(cc_hbox)
 
     def create_year_section(self):
         year_hbox = QHBoxLayout()
         label = QLabel("Select Year:")
-        self.year_combobox = QComboBox()
 
         year = date.today().year
         for yr in range(year + 1, year - 4, -1):
@@ -92,7 +101,6 @@ class MainWindow(QWidget):
     def create_quarter_section(self):
         quarter_hbox = QHBoxLayout()
         label = QLabel("Select Quarter:")
-        self.quarter_combobox = QComboBox()
 
         for q in QUARTERS:
             self.quarter_combobox.addItem(q.capitalize())
@@ -105,9 +113,6 @@ class MainWindow(QWidget):
     def create_restr_section(self):
         restr_vbox = QVBoxLayout()
         label = QLabel("Select Restriction(s):")
-        self.restr_N = QCheckBox("N")
-        self.restr_L = QCheckBox("L")
-        self.restr_A = QCheckBox("A")
         restr_vbox.addWidget(label)
         restr_vbox.addWidget(self.restr_N)
         restr_vbox.addWidget(self.restr_L)
@@ -116,8 +121,11 @@ class MainWindow(QWidget):
 
     def create_button_section(self):
         button_hbox = QHBoxLayout()
-        self.start_button = QPushButton("Start Checking")
-        self.stop_button = QPushButton("Stop")
+
+        self.start_button.setDefault(True)
+        self.start_button.setDisabled(True)
+        self.stop_button.setDisabled(True)
+
         button_hbox.addWidget(self.start_button)
         button_hbox.addWidget(self.stop_button)
         self.left_vbox.addLayout(button_hbox)
@@ -134,6 +142,13 @@ class MainWindow(QWidget):
         elif month in range(11, 13):
             year += 1
         return year, quarter
+
+    def _check_cc_valid(self):
+        cc = self.cc_lineedit.text()
+        if len(cc) == 6 and cc.isnumeric():
+            self.start_button.setDisabled(False)
+        else:
+            self.start_button.setDisabled(True)
         
 
 
